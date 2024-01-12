@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./User";
 import { Subcategory } from "./Subcategory";
 
@@ -15,7 +15,7 @@ export class Post implements PostInterface{
   @Column()
   postText: string
 
-  @OneToMany(() => User, (user) => user.posts)
+  @ManyToOne(() => User, (user) => user.posts)
   user: User
 
   @OneToOne(() => Subcategory, (subcategory) => subcategory.posts)

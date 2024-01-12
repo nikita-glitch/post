@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Topcategory } from "./Topcategory";
 import { Post } from "./Post";
 
@@ -15,9 +15,10 @@ export class Subcategory implements SubcategoryInterface{
   @Column()
   name: string
 
-  @OneToMany(() => Topcategory, (topcategory) => topcategory.subcategories)
+  @ManyToOne(() => Topcategory, (topcategory) => topcategory.subcategories)
   topcategory: Topcategory
 
-  @OneToOne(() => Post, (post) =>  post.subcategory)
-  posts: Post[]
+  @OneToOne(() => Post)
+  @JoinColumn()
+  posts: Post
 }
