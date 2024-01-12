@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./User";
 import { Subcategory } from "./Subcategory";
 
@@ -9,7 +9,7 @@ export interface PostInterface {
 @Entity()
 export class Post implements PostInterface{
 
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("uuid")
   id: number
 
   @Column()
@@ -19,5 +19,6 @@ export class Post implements PostInterface{
   user: User
 
   @OneToOne(() => Subcategory, (subcategory) => subcategory.posts)
+  @JoinColumn()
   subcategory: Subcategory
 }

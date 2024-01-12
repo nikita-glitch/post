@@ -5,21 +5,25 @@ export interface UserInterface {
 	name: string;
 	email: string;
 	password: string;
+  role: string;
 }
 
 @Entity()
 export class User implements UserInterface{
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("uuid")
   id: number;
 
   @Column()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
   password: string;
+
+  @Column({default: 'user'}) 
+  role: string
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];

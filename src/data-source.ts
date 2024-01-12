@@ -8,7 +8,7 @@ import { Topcategory } from "./entity/Topcategory";
 export const AppDataSource = new DataSource({
   type: "postgres",
   host: "localhost",
-  port: 5432,
+  port: parseInt(process.env.DB_PORT),
   username: "postgres",
   password: "1234",
   database: "postgres",

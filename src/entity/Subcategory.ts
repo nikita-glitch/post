@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Topcategory } from "./Topcategory";
 import { Post } from "./Post";
 
@@ -9,7 +9,7 @@ export interface SubcategoryInterface {
 @Entity()
 export class Subcategory implements SubcategoryInterface{
 
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("uuid")
   id: number
 
   @Column()
@@ -19,6 +19,5 @@ export class Subcategory implements SubcategoryInterface{
   topcategory: Topcategory
 
   @OneToOne(() => Post)
-  @JoinColumn()
   posts: Post
 }

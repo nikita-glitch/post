@@ -8,7 +8,7 @@ export interface TopcategoryInterface {
 @Entity()
 export class Topcategory implements TopcategoryInterface{
 
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("uuid")
   id: number
 
   @Column()
