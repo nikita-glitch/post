@@ -5,7 +5,6 @@ export interface UserInterface {
 	name: string;
 	email: string;
 	password: string;
-  role: string;
 }
 
 @Entity()
@@ -23,7 +22,7 @@ export class User implements UserInterface{
   password: string;
 
   @Column({default: 'user'}) 
-  role: string
+  role: string;
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];

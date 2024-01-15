@@ -1,11 +1,13 @@
 import * as express from 'express'
-import * as yup from 'yup'
 import userController from '../controllers/userController'
-//import validation from '../middleware/validation'
 import userSchema from '../schemas/userSchema';
+import validateShema from '../middleware/validation';
+
 const router = express.Router();
 
-router.post('/auth', userController.addUser);
-router.post('/login', userController.login);
+router.post('/auth', validateShema(userSchema), userController.addUser);
+router.post('/login', validateShema(userSchema), userController.login);
 
-module.exports = router;
+
+export default router;
+

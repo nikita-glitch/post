@@ -11,7 +11,7 @@ const userSchema: yup.ObjectSchema<UserInterface> = yup.object({
   password: yup
     .string()
     .min(5, "password must be at least 5 characters long")
-    .max(12, "password must be less than 12 characters long"),
-  role: yup.string().required()
+    .max(12, "password must be less than 12 characters long")
 });
+
 export default userSchema;

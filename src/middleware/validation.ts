@@ -1,18 +1,21 @@
 import * as express from "express";
 import * as yup from "yup";
 
-const validate =
-  (shema: yup.AnySchema) =>
+const validateSchema =
+  (schema: yup.AnySchema) =>
   async (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) => {
     try {
-      console.log(shema);
-
-      await shema.validate(req.body, { abortEarly: false, stripUnknown: true });
+      await schema.validate(req.body, { abortEarly: false });
+      //await schema.validate(req.query, { abortEarly: false });
+      //await schema.validate(req.params, { abortEarly: false });
       next();
-    } catch (error) {}
+    } catch (error) {
+      //next(error)
+      return res.status(400).json({ message: error.errors });
+    }
   };
-//export default validate;
+export default validateSchema;

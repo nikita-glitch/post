@@ -1,30 +1,31 @@
 import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
-import userSchema from "../schemas/userSchema";
+import CustomError from "../error/errorHandler";
 
-const addUser = async (req: Request, res: Response) => {
+const addUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, email, password } = req.body;
-    //await userSchema.validate(name, email, password);
-    const person = await AppDataSource.getRepository(User).findBy(email);
+    const { name, email, password } = req.body;    
+    const person = await AppDataSource.getRepository(User).findBy({ email: email });
     if (person) {
+      throw CustomError.existingUser('User with this email alredy exists');
     }
     const user = new User();
     user.email = email;
     user.password = await bcrypt.hash(password, 3);
-    user.name = name;
+    user.name = name;    
     await AppDataSource.getRepository(User).save(user);
-    return res.json(user);
-  } catch (error) {}
+    return res.status(200).json({ message: 'User has created succsessfully! '});
+  } catch (error) {         
+    return next(error);
+  }
 };
 
-const login = async (req: Request, res: Response) => {
+const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
-    await userSchema.validate(email, password);
     const person = await AppDataSource.getRepository(User).findOneBy(email);
     if (!person) {
     }
@@ -35,6 +36,8 @@ const login = async (req: Request, res: Response) => {
       expiresIn: "1h",
     });
     return res.json(token);
-  } catch (error) {}
+  } catch (error) {
+    return next(error);
+  }
 };
 export default { addUser, login };

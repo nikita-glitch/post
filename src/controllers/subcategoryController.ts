@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AppDataSource } from "../data-source";
 import { Subcategory } from "../entity/Subcategory";
-//import validate from "../middleware/validation";
-import { Topcategory } from "../entity/Topcategory";
 import subcategorySchema from "../schemas/subcategorySchema";
 
 const getSubcategory = async (
