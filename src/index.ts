@@ -6,14 +6,14 @@ import router from "./routes/index";
 import handleError from "./middleware/errorHandlingMiddleware";
 
 AppDataSource.initialize()
-  .then(() => {
+  .then(async () => {
     const app = express();
     const corsOptions = {
       origin: "",
     };
 
     app.use(express.json());
-    app.use(cors());
+    app.use(cors(corsOptions));
     app.use("/home", router);
     app.use(handleError);
 

@@ -7,18 +7,22 @@ import CustomError from "../error/errorHandler";
 
 const addUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, email, password } = req.body;    
-    const person = await AppDataSource.getRepository(User).findBy({ email: email });
+    const { name, email, password } = req.body;
+    const person = await AppDataSource.getRepository(User).findOneBy({
+      email: email,
+    });
     if (person) {
-      throw CustomError.existingUser('User with this email alredy exists');
+      throw CustomError.existingEntity("User with this email alredy exists");
     }
     const user = new User();
     user.email = email;
     user.password = await bcrypt.hash(password, 3);
-    user.name = name;    
+    user.name = name;
     await AppDataSource.getRepository(User).save(user);
-    return res.status(200).json({ message: 'User has created succsessfully! '});
-  } catch (error) {         
+    return res
+      .status(200)
+      .json({ message: "User has created succsessfully! " });
+  } catch (error) {
     return next(error);
   }
 };
@@ -26,15 +30,24 @@ const addUser = async (req: Request, res: Response, next: NextFunction) => {
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
-    const person = await AppDataSource.getRepository(User).findOneBy(email);
+    const person = await AppDataSource.getRepository(User).findOneBy({
+      email: email,
+    });
     if (!person) {
+      throw CustomError.wrongLogPass("Wrong email or password");
     }
     const comparedPassword = bcrypt.compare(password, person.password);
     if (!comparedPassword) {
+      throw CustomError.wrongLogPass("Wrong email or password");
     }
-    const token = jwt.sign({ data: person.id }, process.env.SECRET_KEY, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      {
+        id: person.id,
+        role: person.role,
+      },
+      process.env.SECRET_KEY,
+      { expiresIn: "1h" }
+    );
     return res.json(token);
   } catch (error) {
     return next(error);

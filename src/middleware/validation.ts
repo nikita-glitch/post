@@ -14,8 +14,7 @@ const validateSchema =
       //await schema.validate(req.params, { abortEarly: false });
       next();
     } catch (error) {
-      //next(error)
-      return res.status(400).json({ message: error.errors });
+      return next(error)
     }
   };
 export default validateSchema;

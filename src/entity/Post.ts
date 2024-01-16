@@ -15,6 +15,12 @@ export class Post implements PostInterface{
   @Column()
   postText: string
 
+  @Column({ nullable: true })
+  userId: number
+
+  @Column({ nullable: true })
+  subcategoryId: number
+
   @ManyToOne(() => User, (user) => user.posts)
   user: User
 

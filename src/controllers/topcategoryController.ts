@@ -1,8 +1,7 @@
 import * as express from "express";
 import { AppDataSource } from "../data-source";
 import { Topcategory } from "../entity/Topcategory";
-import topcategorySchema from "../schemas/topcategorySchema";
-//import validate from "../middleware/validation";
+import CustomError from "../error/errorHandler";
 
 const getTopcategory = async (
   req: express.Request,
@@ -17,7 +16,9 @@ const getTopcategory = async (
     if (!topcategory) {
     }
     return res.json(topcategory);
-  } catch (error) {}
+  } catch (error) {
+    next(error)
+  }
 };
 
 const addTopCategory = async (
@@ -27,15 +28,18 @@ const addTopCategory = async (
 ) => {
   try {
     const name  = req.body.name;
-    await topcategorySchema.validate(name);
     const topcategoryRep = AppDataSource.getRepository(Topcategory);
+    const topCat = await topcategoryRep.findOneBy({ name: name });
+    if (topCat) {
+      throw CustomError.existingEntity('Topcategory alredy exist!')
+    }
     const topcategory = new Topcategory();
     topcategory.name = name;
     await topcategoryRep.save(topcategory);
-    return res
-      .status(200)
-      .json({ message: "Topcategory created succsessfully" });
-  } catch (error) {}
+    return res.status(200).json({ message: "Topcategory created succsessfully" });
+  } catch (error) {
+    next(error)
+  }
 };
 
 const getAllTopcategories = async (
@@ -46,7 +50,9 @@ const getAllTopcategories = async (
   try {
     const topcategories = await AppDataSource.getRepository(Topcategory).find();
     return res.json(topcategories);
-  } catch (error) {}
+  } catch (error) {
+    next(error)
+  }
 };
 
 const deleteTopcategory = async (
@@ -58,7 +64,12 @@ const deleteTopcategory = async (
     const id = req.body.id;
     const topcategoryRep = AppDataSource.getRepository(Topcategory);
     await topcategoryRep.delete({ id: id });
-  } catch (error) {}
+    return res
+    .status(200)
+    .json({ message: "Topcategory deleted succsessfully! " });
+  } catch (error) {
+    next(error)
+  }
 };
 
 const updateTopcategory = async (
@@ -68,11 +79,17 @@ const updateTopcategory = async (
 ) => {
   try {
     const { id, name }  = req.body;
-    await topcategorySchema.validate(name);
     const topcategoryRep = AppDataSource.getRepository(Topcategory);
+    const topCat = await topcategoryRep.findOneBy({ name: name });
+    if (topCat) {
+      throw CustomError.existingEntity('Topcategory alredy exist!')
+    }
     await topcategoryRep.update({ id: id }, { name: name });
+    return res
+    .status(200)
+    .json({ message: "Topcategory updated succsessfully! " });
   } catch (error) {
-    
+    next(error)
   }
 }
 

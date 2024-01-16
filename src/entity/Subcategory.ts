@@ -12,8 +12,11 @@ export class Subcategory implements SubcategoryInterface{
   @PrimaryGeneratedColumn("uuid")
   id: number
 
-  @Column()
+  @Column({ unique: true })
   name: string
+
+  @Column({ nullable: true })
+  topcategoryId: number
 
   @ManyToOne(() => Topcategory, (topcategory) => topcategory.subcategories)
   topcategory: Topcategory
