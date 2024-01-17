@@ -12,16 +12,22 @@ const checkAuth = async (
   try {
     const token = req.headers.authorization?.split(" ")[1];
     if (!token || token === null) {
-      throw CustomError.invalidToken('Invalid token')
+      throw CustomError.invalidToken("Invalid token");
     }
     const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
-    if (typeof decodedToken === 'object') {
-      const userId = decodedToken.id
-      const person = await AppDataSource.getRepository(User).findBy({ id: userId })
-      if (!person) {
-        throw CustomError.notFound('User not found');
-      }
-      req.body.token = userId;
+    switch (typeof decodedToken) {
+      case "object":
+        const userId = decodedToken.id;
+        const person = await AppDataSource.getRepository(User).findBy({
+          id: userId,
+        });
+        if (!person) {
+          throw CustomError.notFound("User not found");
+        }
+        req.body.token = userId;
+        break;
+      default:
+        break;
     }
     next();
   } catch (error) {

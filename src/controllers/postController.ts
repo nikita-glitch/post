@@ -51,13 +51,21 @@ const addPost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.body.token;
     const { postText, subcategoryId } = req.body;
+
     const user = await AppDataSource.getRepository(User).findOneBy({ id: userId });
-    const subcategory = await AppDataSource.getRepository(Subcategory).findOneBy({ id: subcategoryId })
+    const subcategory = await AppDataSource.getRepository(Subcategory).findOneBy({ id: subcategoryId });
+    const postRep = AppDataSource.getRepository(Post);
+    const postCheck = postRep.findOneBy({subcategoryId: subcategoryId});
+
+    if (postCheck) {
+      throw CustomError.existingEntity('Post in this subcategory alredy exists')
+    }
+
     const post = new Post();
     post.postText = postText;
     post.user = user;
     post.subcategory = subcategory;
-    await AppDataSource.getRepository(Post).save(post);
+    await postRep.save(post);
     return res.status(201).json({ message: "Post created succsessfully" });
   } catch (error) {
     console.log(error);

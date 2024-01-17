@@ -14,6 +14,7 @@ const getTopcategory = async (
       Topcategory
     ).findOneBy({ id: id });
     if (!topcategory) {
+      throw CustomError.notFound('Topcategory not found');
     }
     return res.json(topcategory);
   } catch (error) {

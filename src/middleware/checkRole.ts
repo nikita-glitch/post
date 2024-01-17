@@ -15,18 +15,21 @@ const checkRole = async (
       throw CustomError.invalidToken("Invalid token");
     }
     const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
-
-    if (typeof decodedToken === "object") {
-      const { userId, role } = decodedToken;
-      const person = await AppDataSource.getRepository(User).findBy({
-        id: userId,
-      });
-      if (!person) {
-        throw CustomError.notFound("User not found");
-      }
-      if (role === "user") {
-        throw CustomError.forbidden('Forbidden');
-      }
+    switch (typeof decodedToken) {
+      case "object":
+        const { userId, role } = decodedToken;
+        const person = await AppDataSource.getRepository(User).findBy({
+          id: userId,
+        });
+        if (!person) {
+          throw CustomError.notFound("User not found");
+        }
+        if (role === "user") {
+          throw CustomError.forbidden("Forbidden");
+        }
+        break;
+      default:
+        break;
     }
     next();
   } catch (error) {

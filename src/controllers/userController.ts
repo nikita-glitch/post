@@ -20,7 +20,7 @@ const addUser = async (req: Request, res: Response, next: NextFunction) => {
     user.name = name;
     await AppDataSource.getRepository(User).save(user);
     return res
-      .status(200)
+      .status(201)
       .json({ message: "User has created succsessfully! " });
   } catch (error) {
     return next(error);
