@@ -64,10 +64,14 @@ const deleteTopcategory = async (
   try {
     const id = req.body.id;
     const topcategoryRep = AppDataSource.getRepository(Topcategory);
+    const topCat = await topcategoryRep.findOneBy({ id: id });    
+    if (!topCat) {
+      throw CustomError.existingEntity('Topcategory not found')
+    }
     await topcategoryRep.delete({ id: id });
     return res
     .status(200)
-    .json({ message: "Topcategory deleted succsessfully! " });
+    .json({ message: "Topcategory deleted succsessfully!" });
   } catch (error) {
     next(error)
   }
@@ -81,6 +85,10 @@ const updateTopcategory = async (
   try {
     const { id, name }  = req.body;
     const topcategoryRep = AppDataSource.getRepository(Topcategory);
+    const topCatExists = await topcategoryRep.findOneBy({ id: id });    
+    if (!topCatExists) {
+      throw CustomError.existingEntity('Topcategory not found')
+    }
     const topCat = await topcategoryRep.findOneBy({ name: name });
     if (topCat) {
       throw CustomError.existingEntity('Topcategory alredy exist!')

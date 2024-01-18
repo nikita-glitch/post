@@ -14,7 +14,7 @@ AppDataSource.initialize()
 
     app.use(express.json());
     app.use(cors(corsOptions));
-    app.use("/home", router);
+    app.use("/api", router);
     app.use(handleError);
 
     app.listen(process.env.PORT, () =>

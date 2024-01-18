@@ -14,6 +14,9 @@ const getSubcategory = async (
     const subcategory = await AppDataSource.getRepository(
       Subcategory
     ).findOneBy({ id: id });
+    if (!subcategory) {
+      throw CustomError.notFound('Subcategory not found');
+    }
     return res.json(subcategory);
   } catch (error) {
     next(error)
@@ -39,11 +42,11 @@ const getTopcategorySubcategories = async (
   next: NextFunction
 ) => {
   try {
-    const topcategoryId = req.body.id;
+    const topcategoryId = req.body.id;    
     if (!topcategoryId) {
       throw CustomError.notFound('Subcategories not found');
     }
-    const subcategories = AppDataSource.getRepository(Subcategory).findBy({
+    const subcategories = await AppDataSource.getRepository(Subcategory).findBy({
       topcategoryId: topcategoryId,
     });
     return res.json(subcategories);
@@ -85,6 +88,10 @@ const updateSubcategory = async (
   try {
     const { id, name } = req.body;
     const subcategoryRep = AppDataSource.getRepository(Subcategory);
+    const subCatExists = await subcategoryRep.findOneBy({ id: id });    
+    if (!subCatExists) {
+      throw CustomError.existingEntity('Subcategory not found')
+    }
     const subCat = await subcategoryRep.findOneBy({ name: name });
     if (subCat) {
       throw CustomError.existingEntity('Subcategory alredy exist!')
@@ -104,6 +111,10 @@ const deleteSubcategory = async (
   try {
     const id = req.body.id;
     const subcategoryRep = AppDataSource.getRepository(Subcategory);
+    const subCat = await subcategoryRep.findOneBy({ id: id });    
+    if (!subCat) {
+      throw CustomError.existingEntity('Subcategory not found')
+    }
     await subcategoryRep.delete({ id: id });
     return res.status(200).json({ message: "Subcategory deleted succsessfully" });
     } catch (error) {

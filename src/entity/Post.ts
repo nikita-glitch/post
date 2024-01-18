@@ -24,7 +24,6 @@ export class Post implements PostInterface{
   @ManyToOne(() => User, (user) => user.posts)
   user: User
 
-  @OneToOne(() => Subcategory, (subcategory) => subcategory.posts)
-  @JoinColumn()
+  @ManyToOne(() => Subcategory, (subcategory) => subcategory.posts)
   subcategory: Subcategory
 }

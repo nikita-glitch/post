@@ -36,6 +36,9 @@ class CustomError extends Error implements ErrorInterface {
   static notFound(message: string) {
     return new CustomError(StatusCodes.NOT_FOUND, message);
   }
+  static emptyRequest(message: string) {
+    return new CustomError(StatusCodes.NOT_FOUND, message);
+  }
 }
 
 export default CustomError;
